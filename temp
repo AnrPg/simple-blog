@@ -1,6 +1,12 @@
 
 
-git branch -m main de
-git fetch origin
-git branch -u origin/de de
+git branch -m main dev
+git fetch remote-repo
+git branch -u remote-repo/dev dev
 git remote set-head origin -a
+
+git remote add remote-repo https://github.com/AnrPg/simple-blog.git
+git push -f remote-repo dev
+git branch -a {or -r for remote branches}
+
+git remote set-url newName https://github.com/AnrPg/simple-blog.git {to rename origin branch}
