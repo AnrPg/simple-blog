@@ -1,0 +1,6 @@
+
+
+git branch -m main de
+git fetch origin
+git branch -u origin/de de
+git remote set-head origin -a
