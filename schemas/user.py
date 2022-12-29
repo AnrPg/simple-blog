@@ -22,4 +22,4 @@ class UserInDB(UserSubmittal):
     dateLastLogin: datetime
 
 class UserView(BaseUser):
-    pass
+    userId: str

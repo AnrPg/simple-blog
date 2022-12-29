@@ -23,6 +23,13 @@ async def get_all_users() -> List[UserView]:
     response = await users.get_all_users()
     return response
 
+@router.get("/user/{user_id}", response_model=UserView)
+async def get_user(user_id: str):
+    """
+        Retrieve a user from db using user's id (primary key in db)
+    """
+    response = await users.get_user(user_id)
+    return response
 
 
 # POST
