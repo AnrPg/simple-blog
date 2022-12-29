@@ -1,13 +1,13 @@
 
 import fastapi
 import uvicorn
-import shortuuid
 from typing import List
-
-from schemas.user import UserView, UserDetailed
+from schemas.user import UserView, UserSubmittal
 from services import users
 
+import string, random
 from datetime import datetime, timedelta
+# import logging
 
 router = fastapi.FastAPI()
 
@@ -20,29 +20,36 @@ def read_items() -> List[UserView]:
     # response = [UserView(id='1', firstName='Anr', lastName='Pg', email='anr@email.com'), UserView(id='2', firstName='Maria', lastName='Annou', email='ma@email.com')]
     return response
 
-@router.post("/user/create")
+@router.post("/user/create", response_model=UserView)
 def create_user() -> str:
     """
-    Create a new user object and store it at the db.
-    User related form headings:
-    id: str
-    firstName: str
-    lastName: str
-    password: str
-    email: Optional[str]
-    tel: Optional[str]
-    birthdate: datetime
-    nationality: List[str]
+    Create a new user object and store it at the db.\n
+    User related form headings:\n
+    id: str\n
+    firstName: str\n
+    lastName: str\n
+    password: str\n
+    email: Optional[str]\n
+    tel: Optional[str]\n
+    birthdate: datetime\n
+    nationality: List[str]\n
     sex: str    
     """
 
-    userToBeCreated = UserDetailed(id=shortuuid.uuid().__str__(), firstName="troll", lastName="tril", email="", tel="", password="", birthdate=datetime.now()-timedelta(days=2), nationality=[""], sex="", dateCreated=datetime.now(), dateLastLogin=datetime.now()+timedelta(days=1))
-    try:
-        response = users.add_user(userToBeCreated)
-    except:
-        pass
+    userToBeCreated = UserSubmittal(firstName=get_random_string(4), lastName=get_random_string(4), nickname=get_random_string(6), email=get_random_string(4)+"@mail.com", tel="+3069"+get_random_number(8), password=get_random_number(4), birthdate=datetime.now()-timedelta(days=2), nationality=["GR", "US"], sex="M")
+    response = users.add_user(userToBeCreated)
 
     return response
 
+def get_random_string(length):
+    # choose from all lowercase letter
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(length))
+
+def get_random_number(length):
+    # choose from digits 0~9
+    digits = string.digits
+    return ''.join(random.choice(digits) for i in range(length))
+    
 if __name__ == '__main__':
-    uvicorn.run(router, port=8000, host='127.0.0.1')
+    uvicorn.run("main:router", port=8000, host='127.0.0.1', reload=True)
