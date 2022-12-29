@@ -1,17 +1,23 @@
 
 
-from schemas.user import UserInDB, UserSubmittal, UserView
 import shortuuid
+from schemas.user import UserInDB, UserSubmittal, UserView
 from datetime import datetime
-from random import randint
+from random import seed, randint
+from typing import List
 
 __cache = []
 
-def get_user() -> UserInDB:
-    random.seed(datetime.now())
-    return  __cache[randint(0, len(__cache))] #f"{{\"response\":\"Success!\", \"user id\":\"{user_to_create.id}\"}}" 
+def sort_by_last_name(item: UserInDB):
+    return item.lastName
 
-def add_user(user_to_create: UserSubmittal) -> UserView:
+
+async def get_all_users() -> List[UserView]:
+    __cache.sort(key=sort_by_last_name)
+    response = __cache
+    return response
+
+async def add_user(user_to_create: UserSubmittal) -> UserView:
     user_id = str(shortuuid.uuid())
     date_created = datetime.now()
     date_last_login = datetime.now()

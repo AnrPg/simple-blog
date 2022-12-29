@@ -11,17 +11,24 @@ from datetime import datetime, timedelta
 
 router = fastapi.FastAPI()
 
+# Routers
+
+# GET
+
 @router.get("/user/all", response_model=List[UserView])
-def read_items() -> List[UserView]:
+async def get_all_users() -> List[UserView]:
     """
-    Retrieve user.
+    Retrieve all users sorted alphabetically by last name.
     """
-    response = [users.get_user()]
-    # response = [UserView(id='1', firstName='Anr', lastName='Pg', email='anr@email.com'), UserView(id='2', firstName='Maria', lastName='Annou', email='ma@email.com')]
+    response = await users.get_all_users()
     return response
 
-@router.post("/user/create", response_model=UserView)
-def create_user() -> str:
+
+
+# POST
+
+@router.post("/user/create", response_model=UserView, status_code=201)
+async def create_user() -> str:
     """
     Create a new user object and store it at the db.\n
     User related form headings:\n
@@ -37,9 +44,11 @@ def create_user() -> str:
     """
 
     userToBeCreated = UserSubmittal(firstName=get_random_string(4), lastName=get_random_string(4), nickname=get_random_string(6), email=get_random_string(4)+"@mail.com", tel="+3069"+get_random_number(8), password=get_random_number(4), birthdate=datetime.now()-timedelta(days=2), nationality=["GR", "US"], sex="M")
-    response = users.add_user(userToBeCreated)
+    response = await users.add_user(userToBeCreated)
 
     return response
+
+# Utillity functions
 
 def get_random_string(length):
     # choose from all lowercase letter
