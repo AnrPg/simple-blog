@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Optional
 from pydantic import StrictBool
-from schemas.user import UserView, UserInDB
+from pydantic_models.user import UserView, UserInDB
 
 __cache = {}
 lifetime_in_hours = 1.5

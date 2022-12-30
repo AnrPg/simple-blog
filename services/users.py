@@ -3,7 +3,7 @@
 import shortuuid
 from datetime import datetime
 from typing import List
-from schemas.user import UserInDB, UserSubmittal, UserView
+from pydantic_models.user import UserInDB, UserSubmittal, UserView
 from infrastructure import users_cache
 
 __db = []
