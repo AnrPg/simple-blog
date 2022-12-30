@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from typing import Optional
+from pydantic import StrictBool
 from schemas.user import UserView, UserInDB
 
 __cache = {}
@@ -37,7 +38,7 @@ def add_user(user_to_cache: UserInDB):
 
 # Utility functions
 
-def is_out_of_date(data: dict) -> bool:
+def is_out_of_date(data: dict) -> StrictBool:
     """
     Input dictionary must be of the form:\n
     { "time" : datetime_of_last_set , "value" : object_to_be_cached }

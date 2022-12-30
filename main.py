@@ -50,7 +50,7 @@ async def create_user() -> str:
     sex: str    
     """
 
-    userToBeCreated = UserSubmittal(firstName=get_random_string(4), lastName=get_random_string(4), nickname=get_random_string(6), email=get_random_string(4)+"@mail.com", tel="+3069"+get_random_number(8), password=get_random_number(4), birthdate=datetime.now()-timedelta(days=2), nationality=["GR", "US"], sex="M")
+    userToBeCreated = UserSubmittal(firstName=get_random_string(4), lastName=get_random_string(4), nickname=get_random_string(6), email=get_random_string(4)+"@mail.com", tel="+3069"+get_random_number(8), password=get_random_number(4), birthdate=datetime.now()-timedelta(days=2), nationality=["GR", "US"], gender='Male')
     response = await users.add_user(userToBeCreated)
 
     return response
