@@ -2,7 +2,7 @@
 import fastapi
 import uvicorn
 from typing import List
-from schemas.user import UserView, UserSubmittal
+from pydantic_models.user import UserView, UserSubmittal
 from services import users
 
 import string, random
