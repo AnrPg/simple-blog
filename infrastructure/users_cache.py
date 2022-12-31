@@ -2,11 +2,12 @@ from datetime import datetime, timedelta
 from typing import Optional
 from pydantic import StrictBool
 from pydantic_models.user import UserView, UserInDB
+from uuid import UUID
 
 __cache = {}
 lifetime_in_hours = 1.5
 
-def get_user(user_id: str) -> Optional[UserView]:
+def get_user(user_id: UUID) -> Optional[UserView]:
     """
     Fetches a user object from cache iff this object is not outdated.
     Else, returns None (so the cached version of the object -if ever existed- is outdated and thus, unneeded)
@@ -36,6 +37,13 @@ def add_user(user_to_cache: UserInDB):
     __cache[user_to_cache.userId] = data
     __clean_out_of_date()
 
+def purge_user(user_id: UUID) -> None:
+    """
+    Erases from __cache all entries of user_id. No exception is thrown if user not in cache
+    """
+    if user_id in __cache.keys():
+        del __cache[user_id]
+
 # Utility functions
 
 def is_out_of_date(data: dict) -> StrictBool:
@@ -58,4 +66,5 @@ def __clean_out_of_date():
     """
     Removes items in __cache that are outdated (in relevance with lifetime_in_hours)
     """
-    (data for data in __cache if not is_out_of_date(data))
+    global __cache
+    __cache = dict((key, data) for key, data in __cache.items() if not is_out_of_date(data)) # [x] Fixed appropriate deletion of data by returning the list comprehension as dict to the GLOBAL var __cache
