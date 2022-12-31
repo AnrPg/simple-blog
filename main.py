@@ -1,13 +1,18 @@
 
 import fastapi
 import uvicorn
+import json
 from typing import List
+from pydantic import Json
 from pydantic_models.user import UserView, UserSubmittal
 from services import users
+from uuid import UUID
 
 import string, random
 from datetime import datetime, timedelta
 # import logging
+
+# TODO check if services' responses are sound and return error message elsehow
 
 router = fastapi.FastAPI()
 
@@ -15,7 +20,7 @@ router = fastapi.FastAPI()
 
 # GET
 
-@router.get("/user/all", response_model=List[UserView])
+@router.get("/api/user/all", response_model=List[UserView])
 async def get_all_users() -> List[UserView]:
     """
     Retrieve all users sorted alphabetically by last name.
@@ -23,8 +28,8 @@ async def get_all_users() -> List[UserView]:
     response = await users.get_all_users()
     return response
 
-@router.get("/user/{user_id}", response_model=UserView)
-async def get_user(user_id: str):
+@router.get("/api/user/{user_id}", response_model=UserView)
+async def get_user(user_id: UUID):
     """
         Retrieve a user from db using user's id (primary key in db)
     """
@@ -34,12 +39,12 @@ async def get_user(user_id: str):
 
 # POST
 
-@router.post("/user/create", response_model=UserView, status_code=201)
-async def create_user() -> str:
+@router.post("/api/user/create", response_model=UserView, status_code=201)
+async def create_user() -> UserView:
     """
     Create a new user object and store it at the db.\n
     User related form headings:\n
-    id: str\n
+    id: uuid4\n
     firstName: str\n
     lastName: str\n
     password: str\n
@@ -50,10 +55,25 @@ async def create_user() -> str:
     sex: str    
     """
 
+    # TODO create front-end form to supply this endpoint with the data required to create user
     userToBeCreated = UserSubmittal(firstName=get_random_string(4), lastName=get_random_string(4), nickname=get_random_string(6), email=get_random_string(4)+"@mail.com", tel="+3069"+get_random_number(8), password=get_random_number(4), birthdate=datetime.now()-timedelta(days=2), nationality=["GR", "US"], gender='Male')
     response = await users.add_user(userToBeCreated)
 
-    return response
+    return response # json.dumps(response.dict())
+
+    # DELETE
+
+@router.delete("/api/user/{user_id}", status_code=204)
+async def delete_user(user_id: UUID) -> Json:
+    response = await users.delete_user(user_id) # TODO use status code from response to assess success of request
+    # if not response or response.status_code != 204: 
+    #     response = {
+    #         'error_message':'empty response from server',
+    #         'status_code': 500
+    #     }
+    #     return json.load(response)
+    # else:
+    return json.dumps(f"Successfully deleted user with id: {user_id} ! :)")
 
 # Utillity functions
 

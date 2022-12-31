@@ -1,20 +1,23 @@
 
-
-import shortuuid
+import json
 from datetime import datetime
 from typing import List
+from pydantic import Json
 from pydantic_models.user import UserInDB, UserSubmittal, UserView
 from infrastructure import users_cache
+from uuid import UUID, uuid4
 
 __db = []
 
-async def get_user(user_id: str) -> UserView | None:
+# TODO response should be a json with at least two fields; "object" and "status_code"
+
+async def get_user(user_id: UUID) -> UserView | None:
     cached_user = users_cache.get_user(user_id=user_id)
     if cached_user:
         print(f"Retrieved cached user with id: {cached_user.userId}")
         return cached_user
     else:
-        retrieved_user =  next((user for user in __db if user.userId == user_id), None)
+        retrieved_user =  next((user for user in __db if str(user.userId) == str(user_id)), None)
         if retrieved_user:
             users_cache.add_user(retrieved_user)
             return retrieved_user
@@ -23,12 +26,13 @@ async def get_user(user_id: str) -> UserView | None:
 
 
 async def get_all_users() -> List[UserView]:
-    __db.sort(key=sort_by_last_name)
+    if __db:
+        __db.sort(key=sort_by_last_name) # [x] Fixed: sort only if __db is NOT EMPTY
     response = __db
     return response
 
 async def add_user(user_to_create: UserSubmittal) -> UserView:
-    user_id = str(shortuuid.uuid())
+    user_id = uuid4()
     date_created = datetime.now()
     date_last_login = datetime.now()
     
@@ -36,6 +40,17 @@ async def add_user(user_to_create: UserSubmittal) -> UserView:
     __db.append(user_to_create)
 
     return user_to_create
+
+async def delete_user(user_id: UUID) -> Json:
+    global __db
+    users_cache.purge_user(user_id)
+    print(users_cache.get_user(user_id=user_id))
+
+    __db = [user for user in __db if str(user.userId) != str(user_id)]
+    deleted_user = next((user for user in __db if str(user.userId) == str(user_id)), None)
+    print( deleted_user )
+
+    return json.dumps(f"User with id {user_id} was successfully deleted! :)")
 
 # Utility functions
 
