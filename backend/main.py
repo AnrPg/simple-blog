@@ -1,5 +1,6 @@
 
 import fastapi
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 import json
 from typing import List
@@ -16,6 +17,18 @@ from datetime import datetime, timedelta
 
 router = fastapi.FastAPI()
 
+origins = [
+    "http://localhost:3000",
+    "https://localhost:3000"
+]
+
+router.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # Routers
 
 # GET
@@ -25,7 +38,7 @@ async def get_all_users() -> List[UserView]:
     """
     Retrieve all users sorted alphabetically by last name.
     """
-    for i in [1, 2]:
+    for i in [1]:
         userToBeCreated = create_sample_user()
         await users.add_user(userToBeCreated)
 
