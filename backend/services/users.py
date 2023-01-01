@@ -44,12 +44,7 @@ async def add_user(user_to_create: UserSubmittal) -> UserView:
 async def delete_user(user_id: UUID) -> Json:
     global __db
     users_cache.purge_user(user_id)
-    print(users_cache.get_user(user_id=user_id))
-
     __db = [user for user in __db if str(user.userId) != str(user_id)]
-    deleted_user = next((user for user in __db if str(user.userId) == str(user_id)), None)
-    print( deleted_user )
-
     return json.dumps(f"User with id {user_id} was successfully deleted! :)")
 
 # Utility functions
