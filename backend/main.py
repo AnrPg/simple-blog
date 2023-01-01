@@ -25,7 +25,12 @@ async def get_all_users() -> List[UserView]:
     """
     Retrieve all users sorted alphabetically by last name.
     """
+    for i in [1, 2]:
+        userToBeCreated = create_sample_user()
+        await users.add_user(userToBeCreated)
+
     response = await users.get_all_users()
+    print(response)
     return response
 
 @router.get("/api/user/{user_id}", response_model=UserView)
@@ -56,7 +61,7 @@ async def create_user() -> UserView:
     """
 
     # TODO create front-end form to supply this endpoint with the data required to create user
-    userToBeCreated = UserSubmittal(firstName=get_random_string(4), lastName=get_random_string(4), nickname=get_random_string(6), email=get_random_string(4)+"@mail.com", tel="+3069"+get_random_number(8), password=get_random_number(4), birthdate=datetime.now()-timedelta(days=2), nationality=["GR", "US"], gender='Male')
+    userToBeCreated = create_sample_user()
     response = await users.add_user(userToBeCreated)
 
     return response # json.dumps(response.dict())
@@ -86,6 +91,10 @@ def get_random_number(length):
     # choose from digits 0~9
     digits = string.digits
     return ''.join(random.choice(digits) for i in range(length))
+
+def create_sample_user() -> UserSubmittal:
+    return UserSubmittal(firstName=get_random_string(4), lastName=get_random_string(4), nickname=get_random_string(6), email=get_random_string(4)+"@mail.com", tel="+3069"+get_random_number(8), password=get_random_number(4), birthdate=datetime.now()-timedelta(days=2), nationality=["GR", "US"], gender='Male')
+    
     
 if __name__ == '__main__':
     uvicorn.run("main:router", port=8000, host='127.0.0.1', reload=True)
