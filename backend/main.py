@@ -36,14 +36,13 @@ router.add_middleware(
 @router.get("/api/user/all", response_model=List[UserView])
 async def get_all_users() -> List[UserView]:
     """
-    Retrieve all users sorted alphabetically by last name.
+        Retrieve all users sorted alphabetically by last name.
     """
-    for i in [1]:
-        userToBeCreated = create_sample_user()
-        await users.add_user(userToBeCreated)
+    # for i in [1]:
+    #     userToBeCreated = create_sample_user()
+    #     await users.add_user(userToBeCreated)
 
     response = await users.get_all_users()
-    print(response)
     return response
 
 @router.get("/api/user/{user_id}", response_model=UserView)
@@ -58,7 +57,7 @@ async def get_user(user_id: UUID):
 # POST
 
 @router.post("/api/user/create", response_model=UserView, status_code=201)
-async def create_user() -> UserView:
+async def create_user(user_submittal: UserSubmittal) -> UserView:
     """
     Create a new user object and store it at the db.\n
     User related form headings:\n
@@ -72,7 +71,7 @@ async def create_user() -> UserView:
     nationality: List[str]\n
     sex: str    
     """
-
+    print(user_submittal)
     # TODO create front-end form to supply this endpoint with the data required to create user
     userToBeCreated = create_sample_user()
     response = await users.add_user(userToBeCreated)

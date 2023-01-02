@@ -28,10 +28,10 @@ class BaseUser(BaseModel):
     
 
 class UserSubmittal(BaseUser):    
-    password: constr(min_length=4) #constr(regex=r"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[?!@$%^&*-#\(\)\{\}\_\=\+]).{8,}$")
-    birthdate: PastDate
-    nationality: List[constr(min_length=2, max_length=2)]
-    gender: Literal['Male', 'Female', 'Non-binary', 'Prefer not to say']
+    password: constr(min_length=4) | None #constr(regex=r"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[?!@$%^&*-#\(\)\{\}\_\=\+]).{8,}$")
+    birthdate: PastDate | str
+    nationality: List[constr(min_length=2, max_length=2)] | None
+    gender: Literal['Male', 'Female', 'Non-binary', 'Prefer not to say'] | None
 
 class UserInDB(UserSubmittal):
     userId: Id = Field(default_factory = uuid4())
