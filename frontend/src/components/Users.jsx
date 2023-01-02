@@ -121,7 +121,7 @@ function AddUser() {
                 nationality
             ],
             "gender": gender
-    }
+        }
 
         fetch("http://127.0.0.1:8000/api/user/create", {
         method: "POST",

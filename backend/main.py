@@ -59,22 +59,11 @@ async def get_user(user_id: UUID):
 @router.post("/api/user/create", response_model=UserView, status_code=201)
 async def create_user(user_submittal: UserSubmittal) -> UserView:
     """
-    Create a new user object and store it at the db.\n
-    User related form headings:\n
-    id: uuid4\n
-    firstName: str\n
-    lastName: str\n
-    password: str\n
-    email: Optional[str]\n
-    tel: Optional[str]\n
-    birthdate: datetime\n
-    nationality: List[str]\n
-    sex: str    
+    Create a new user object and store it at the db.
     """
-    print(user_submittal)
-    # TODO create front-end form to supply this endpoint with the data required to create user
-    userToBeCreated = create_sample_user()
-    response = await users.add_user(userToBeCreated)
+    # [x] create front-end form to supply this endpoint with the data required to create user
+    # userToBeCreated = create_sample_user()
+    response = await users.add_user(user_submittal)
 
     return response # json.dumps(response.dict())
 

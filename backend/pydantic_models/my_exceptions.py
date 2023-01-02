@@ -17,3 +17,16 @@ class MissingIdentifier(ValidationError):
     def __init__(self, error_message: str, status_code: int) -> None:
         super().__init__(error_message, status_code)
         self.error_message = error_message
+        self.status_code = status_code
+
+class MalformedTelephone(ValidationError):
+    def __init__(self, error_message: str, status_code: int) -> None:
+        super().__init__(error_message, status_code)
+        self.error_message = error_message
+        self.status_code = status_code
+
+class MalformedDate(ValidationError):
+    def __init__(self, error_message: str, status_code: int) -> None:
+        super().__init__(error_message, status_code)
+        self.error_message = error_message
+        self.status_code = status_code
